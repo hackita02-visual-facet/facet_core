@@ -43,13 +43,10 @@ def _facets_from_json(jsn_res):
 
 	facets = {}
 	for facet_d in facet_list:
-		fd = {
-			"count"	:	int(facet_d['@COUNT']),
-			"values"	:	{}
-		}
+		fd = {}
 
 		for kv in facet_d[_s("FACET_VALUES")]:
-			fd["values"][kv["@KEY"]] = int(kv["@VALUE"])
+			fd[kv["@KEY"]] = int(kv["@VALUE"])
 
 		facets[facet_d['@NAME']] = fd
 
@@ -68,13 +65,10 @@ def _facets_from_xml(xml_res):
 
 	facets = {}
 	for facet_el in facet_list.findall(_s("FACET")):
-		fd = {
-			"count"	:	int(facet_el.get('COUNT')),
-			"values"	:	{}
-		}
+		fd = {}
 
 		for kv in facet_el.findall(_s("FACET_VALUES")):
-			fd["values"][kv.get("KEY")] = int(kv.get("VALUE"))
+			fd[kv.get("KEY")] = int(kv.get("VALUE"))
 
 		facets[facet_el.get("NAME")] = fd
 
