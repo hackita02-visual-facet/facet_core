@@ -10,12 +10,14 @@ def _top_facet_ratio(facet):
 
 	return float(ratios[0])/ratios[1]
 
-def max_split(facets,top=2):
+def max_split(facets,top=None):
 
 	top_ratios = [(k,_top_facet_ratio(v)) for k,v in facets.items()	]
 	top_ratios.sort(key=itemgetter(1),reverse=True)
 	
-	return top_ratios[:top] if len(top_ratios) >= top else top_ratios
-
+	if top is not None and len(top_ratios) >= top:
+		return top_ratios[:top]
+	else:
+		return top_ratios
 
 
