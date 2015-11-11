@@ -24,7 +24,7 @@ def brief_query(query,**query_params):
 	res = requests.get(_url,args)
 
 	if res.ok:
-		return res.content
+		return res.content.decode()
 
 	res.raise_for_status()
 
@@ -43,10 +43,9 @@ def _facets_from_json(jsn_res):
 
 	facets = {}
 	for facet_d in facet_list:
-		fd = {}
-
-		for kv in facet_d[_s("FACET_VALUES")]:
-			fd[kv["@KEY"]] = int(kv["@VALUE"])
+		fd = {
+		  kv["@KEY"] : int(kv["@VALUE"]) for kv in facet_d[_s("FACET_VALUES")]
+		}
 
 		facets[facet_d['@NAME']] = fd
 
@@ -65,10 +64,9 @@ def _facets_from_xml(xml_res):
 
 	facets = {}
 	for facet_el in facet_list.findall(_s("FACET")):
-		fd = {}
-
-		for kv in facet_el.findall(_s("FACET_VALUES")):
-			fd[kv.get("KEY")] = int(kv.get("VALUE"))
+		fd = {
+		  kv.get("KEY") : int(kv.get("VALUE")) for kv in facet_el.findall(_s("FACET_VALUES"))
+		}
 
 		facets[facet_el.get("NAME")] = fd
 
@@ -82,7 +80,7 @@ def parse_facets(res):
 		try:
 			facets = _facets_from_xml(res)
 		except etree.XMLSyntaxError:
-			raies("Invlalid primo response")
+			raise ValueError("Invalid primo response")
 
 	return facets 
 
