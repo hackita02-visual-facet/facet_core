@@ -1,7 +1,7 @@
 from operator import itemgetter
 
 def _top_facet_ratio(facet):
-	ratios = facet.values()
+	ratios = list(facet.values())
 
 	if len(ratios) < 2:
 		return 0
