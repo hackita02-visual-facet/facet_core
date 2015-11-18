@@ -35,5 +35,5 @@ def sort_by_max_result(facets):
     return sorted(facet_res, key=getkey, reverse=True)  # sort facets by number of results
 
 
-def sort_within_facet_by_name(facets, facet2sort):
+def sort_values_by_name(facets, facet2sort):
     return sorted(facets[facet2sort].keys())
