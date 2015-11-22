@@ -20,3 +20,20 @@ def max_split(facets, top=None):
         return top_ratios[:top]
     else:
         return top_ratios
+
+
+def sort_by_max_result(facets):
+    facet_names = facets.keys()
+    facet_res = []
+
+    for key, name in zip(facets, facet_names):
+        facet_res.append((name, sum(facets[key].values())))
+
+    def getkey(item):
+        return item[1]
+
+    return sorted(facet_res, key=getkey, reverse=True)  # sort facets by number of results
+
+
+def sort_values_by_name(facets, facet2sort):
+    return sorted(facets[facet2sort].keys())
