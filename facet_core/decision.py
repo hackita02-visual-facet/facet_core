@@ -1,6 +1,5 @@
 from operator import itemgetter
 
-
 def _top_facet_ratio(facet):
     ratios = list(facet.values())
 
@@ -37,3 +36,23 @@ def sort_by_max_result(facets):
 
 def sort_values_by_name(facets, facet2sort):
     return sorted(facets[facet2sort].keys())
+
+_ranker_registry = {
+    "max_split" :   max_split,
+    "max_result"    :   sort_by_max_result,
+}
+
+def rank_facets(facets,ranker=None):
+
+    if ranker:
+        ranker = _ranker_registry.get(ranker)
+        if not ranker:
+            raise ValueError("Unknown ranker")
+
+        return ranker(facets)
+    else:
+        return {
+            name : f(facets) for name,f in _ranker_registry.items()
+        }
+
+
