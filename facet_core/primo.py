@@ -2,13 +2,12 @@ import requests
 import json
 from lxml import etree
 
-PRIMO_URL = "http://primo.nli.org.il/PrimoWebServices/xservice/search"
+_host = 'primo.nli.org.il'
+PRIMO_URL = "http://{}/PrimoWebServices/xservice/search".format(_host)
 
 
-def brief_query(query, **query_params):
+def brief_query(query,facets = None,**query_params):
     _url = "%s/brief" % PRIMO_URL
-
-    q = 'any,contains,{}'.format(query)
 
     args = {
         "institution": "NNL",
@@ -18,7 +17,18 @@ def brief_query(query, **query_params):
     }
 
     args.update(dict(query_params))
-    args['query'] = q
+
+    q = 'any,contains,{}'.format(query)
+    args['query'] = [q]
+
+    if facets is not None:
+        facet_q = 'facet_{},exact,{}'
+
+        for fname, fvalue in facets:
+            if fname == 'creationdate':
+                fvalue = '[{0}+TO+{1}]'.format(*fvalue)
+
+            args['query'].append(facet_q.format(fname,fvalue))
 
     res = requests.get(_url, args)
 
@@ -113,7 +123,7 @@ def parse_facets(res, query_total):
     return facets
 
 
-def facet_query(query, query_total = True, **query_params):
-    res = brief_query(query, **query_params)
+def facet_query(query, facets = None, query_total = True, **query_params):
+    res = brief_query(query,facets, **query_params)
 
     return parse_facets(res, query_total)
