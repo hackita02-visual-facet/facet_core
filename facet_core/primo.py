@@ -26,12 +26,16 @@ def brief_query(query,facets = None,**query_params):
 
         for fname, fvalue in facets:
             if fname == 'creationdate':
-                fvalue = '[{0}+TO+{1}]'.format(*fvalue)
+                try:
+                    year = int(fvalue)
+                    fvalue = '[{}+TO+{}]'.format(year,year)
+                except TypeError:
+                    pass
 
             args['query'].append(facet_q.format(fname,fvalue))
 
     res = requests.get(_url, args)
-
+    print(res.url)
     if res.ok:
         return res.content.decode()
 
