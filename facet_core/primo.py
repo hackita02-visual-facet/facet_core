@@ -2,7 +2,7 @@ import requests
 import json
 from lxml import etree
 
-_host = 'primo.nli.org.il'
+_host = '178.62.194.73'#'primo.nli.org.il'
 PRIMO_URL = "http://{}/PrimoWebServices/xservice/search".format(_host)
 
 
@@ -26,11 +26,17 @@ def brief_query(query,facets = None,**query_params):
 
         for fname, fvalue in facets:
             if fname == 'creationdate':
-                try:
-                    year = int(fvalue)
-                    fvalue = '[{}+TO+{}]'.format(year,year)
-                except TypeError:
-                    pass
+                tmpl = '[{}+TO+{}]'
+                if isinstance(fvalue,int):
+                    fvalue = tmpl.format(fvalue,fvalue)
+                elif not isinstance(fvalue,str):
+                    fvalue = tmpl.format(*fvalue)
+                else:
+                    for sep in [","," - "," to "]:
+                        splts = fvalue.split(sep)
+                        if len(splts) == 2:
+                            fvalue = tmpl.format(*splts)
+                            break
 
             args['query'].append(facet_q.format(fname,fvalue))
 
