@@ -30,7 +30,7 @@ def brief_query(query,facets = None,**query_params):
                 try:
                     fvalue = int(fvalue)
                     fvalue = tmpl.format(fvalue,fvalue)
-                except TypeError:
+                except ValueError:
                     if not isinstance(fvalue,str):
                         fvalue = tmpl.format(*fvalue)
                     else:
